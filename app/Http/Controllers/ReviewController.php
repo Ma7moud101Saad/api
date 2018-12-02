@@ -12,9 +12,10 @@ class ReviewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        //
+        //echo $id;
+        //echo 'hello';
     }
 
     /**

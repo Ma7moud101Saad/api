@@ -19,7 +19,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::apiResource('/products','ProductController');
 
+//products/3/review
+//['prefix'=>'products']          products
+//{product}                       3
+//review                          review
 Route::group(['prefix'=>'products'],function(){
     
-    Route::apiResource('/{product}/reviews','ReviewController');
+    Route::apiResource('/{product}/review','ReviewController');
 });
