@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\model\product;
+use App\Http\Requests\ProductRequest;
 use App\Http\Resources\product\productResource;
 use App\Http\Resources\product\productCollection;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function __construct() 
+    {
+        $this->middleware('auth:api')->except('index','show');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -35,9 +41,26 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        //
+       //return $request->all();
+        //`name`, `detail`, `price`, `stock`, `discount`
+        $product = new product;
+        
+        $product->name      = $request->name;
+        $product->detail    = $request->description;
+        $product->price     = $request->price;
+        $product->stock     = $request->stock;
+        $product->discount  = $request->discount;
+        
+        $product->save();
+        
+        //لعرض الداتا
+        return response(
+                [
+                    'data' => new productResource($product)//هياخد الداتا ويحولها 
+                ], Response::HTTP_CREATED);
+                
     }
 
     /**
@@ -71,7 +94,15 @@ class ProductController extends Controller
      */
     public function update(Request $request, product $product)
     {
-        //
+        
+        $request['detail'] = $request->description; //upfsted description into detail
+        unset($request['description']); //Remove description
+        $product->update($request->all()); //updated data
+       
+        return response(
+                [
+                    'data' => new productResource($product)//هياخد الداتا ويحولها 
+                ], Response::HTTP_CREATED);
     }
 
     /**
@@ -82,6 +113,10 @@ class ProductController extends Controller
      */
     public function destroy(product $product)
     {
-        //
+        $product->delete();
+        return response(
+                [
+                    null
+                ], Response::HTTP_NO_CONTENT);
     }
 }
