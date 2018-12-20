@@ -8,7 +8,8 @@ use App\Http\Resources\product\productResource;
 use App\Http\Resources\product\productCollection;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
-
+use App\Exceptions\productNotBelongsToUser;
+use Auth;
 class ProductController extends Controller
 {
     public function __construct() 
@@ -52,6 +53,7 @@ class ProductController extends Controller
         $product->price     = $request->price;
         $product->stock     = $request->stock;
         $product->discount  = $request->discount;
+        $product->user_id  = $request->user_id;
         
         $product->save();
         
@@ -94,7 +96,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, product $product)
     {
-        
+        $this->productUserCheck($product);
         $request['detail'] = $request->description; //upfsted description into detail
         unset($request['description']); //Remove description
         $product->update($request->all()); //updated data
@@ -113,10 +115,19 @@ class ProductController extends Controller
      */
     public function destroy(product $product)
     {
+        $this->productUserCheck($product);
         $product->delete();
         return response(
                 [
                     null
                 ], Response::HTTP_NO_CONTENT);
+    }
+    
+    public function productUserCheck($product) {
+        if(Auth::id() !== $product->user_id)
+        {
+            throw new productNotBelongsToUser;
+        }
+        
     }
 }

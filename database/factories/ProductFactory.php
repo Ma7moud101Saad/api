@@ -8,6 +8,10 @@ $factory->define(App\model\product::class, function (Faker $faker) {
         'detail'    => $faker->paragraph($nbSentences = 3, $variableNbSentences = true),
         'price'     => $faker->numberBetween($min = 100, $max = 1000),
         'stock'     => $faker->randomDigit,
-        'discount'  => $faker->numberBetween($min = 2, $max = 30)
+        'discount'  => $faker->numberBetween($min = 2, $max = 30),
+        'user_id'   =>  function()
+        {
+            return App\User::all()->random();
+        }
     ];
 });

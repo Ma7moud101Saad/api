@@ -18,6 +18,7 @@ trait traitExeption{
             {
                     return $this->responceHttp();
             }
+            return parent::render($request, $e);
         }
         
         public function modelExcption($e) {
