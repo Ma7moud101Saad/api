@@ -73,9 +73,10 @@ class ReviewController extends Controller
      * @param  \App\model\review  $review
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, review $review)
+    public function update(Request $request, product $product, review $review)
     {
-        //
+        $review->update($request->all());
+        return response(['date'=>new ReviewResource($review)],Response::HTTP_CREATED);
     }
 
     /**
@@ -84,8 +85,12 @@ class ReviewController extends Controller
      * @param  \App\model\review  $review
      * @return \Illuminate\Http\Response
      */
-    public function destroy(review $review)
+    public function destroy(product $product,review $review)
     {
-        //
+        $review->delete();
+                return response(
+                [
+                    null
+                ], Response::HTTP_NO_CONTENT);
     }
 }
